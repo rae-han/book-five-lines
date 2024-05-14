@@ -3,15 +3,69 @@ const TILE_SIZE = 30;
 const FPS = 30;
 const SLEEP = 1000 / FPS;
 
-enum Tile {
-  AIR,
-  FLUX,
-  UNBREAKABLE,
-  PLAYER,
-  STONE, FALLING_STONE,
-  BOX, FALLING_BOX,
-  KEY1, LOCK1,
-  KEY2, LOCK2
+// enum Tile {
+//   AIR,
+//   FLUX,
+//   UNBREAKABLE,
+//   PLAYER,
+//   STONE, FALLING_STONE,
+//   BOX, FALLING_BOX,
+//   KEY1, LOCK1,
+//   KEY2, LOCK2
+// }
+
+interface Tile {
+  isAir(): boolean;
+  isFlux(): boolean;
+  isUnbreakable(): boolean;
+  isPlayer(): boolean;
+  isStone(): boolean;
+  isFallingStone(): boolean;
+  isBox(): boolean;
+  isFallingBox(): boolean;
+  isKey1(): boolean;
+  isLock1(): boolean;
+  isKey2(): boolean;
+  isLock2(): boolean;
+}
+
+class Air implements Tile {
+  isAir() {
+    return true;
+  }
+  isFlux() {
+    return false;
+  }
+  isUnbreakable() {
+    return false;
+  }
+  isPlayer() {
+    return false;
+  }
+  isStone() {
+    return false;
+  }
+  isFallingStone() {
+    return false;
+  }
+  isBox(){
+    return false
+  }
+  isFallingBox(){
+    return false
+  }
+  isKey1(){
+    return false
+  }
+  isLock1() {
+    return false
+  }
+  isKey2(){
+    return false
+  }
+  isLock2() {
+    return false
+  }
 }
 
 enum RawInput {
@@ -219,21 +273,25 @@ const createGraphics = () => {
   return g;
 }
 
+const colorOfTile = (g: CanvasRenderingContext2D, x: number, y: number) => {
+  if (map[y][x] === Tile.FLUX)
+    g.fillStyle = "#ccffcc";
+  else if (map[y][x] === Tile.UNBREAKABLE)
+    g.fillStyle = "#999999";
+  else if (map[y][x] === Tile.STONE || map[y][x] === Tile.FALLING_STONE)
+    g.fillStyle = "#0000cc";
+  else if (map[y][x] === Tile.BOX || map[y][x] === Tile.FALLING_BOX)
+    g.fillStyle = "#8b4513";
+  else if (map[y][x] === Tile.KEY1 || map[y][x] === Tile.LOCK1)
+    g.fillStyle = "#ffcc00";
+  else if (map[y][x] === Tile.KEY2 || map[y][x] === Tile.LOCK2)
+    g.fillStyle = "#00ccff";
+}
+
 const drawMap = (g: CanvasRenderingContext2D) => {
   for (let y = 0; y < map.length; y++) {
     for (let x = 0; x < map[y].length; x++) {
-      if (map[y][x] === Tile.FLUX)
-        g.fillStyle = "#ccffcc";
-      else if (map[y][x] === Tile.UNBREAKABLE)
-        g.fillStyle = "#999999";
-      else if (map[y][x] === Tile.STONE || map[y][x] === Tile.FALLING_STONE)
-        g.fillStyle = "#0000cc";
-      else if (map[y][x] === Tile.BOX || map[y][x] === Tile.FALLING_BOX)
-        g.fillStyle = "#8b4513";
-      else if (map[y][x] === Tile.KEY1 || map[y][x] === Tile.LOCK1)
-        g.fillStyle = "#ffcc00";
-      else if (map[y][x] === Tile.KEY2 || map[y][x] === Tile.LOCK2)
-        g.fillStyle = "#00ccff";
+      colorOfTile(g, x, y)
 
       if (map[y][x] !== Tile.AIR && map[y][x] !== Tile.PLAYER)
         g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
